@@ -9,15 +9,20 @@
 
 ARG BASE_IMAGE="docker.io/php:8.1.1-cli"
 
-FROM docker.io/php@sha256:8f62dbb3ab718cfb3ab83a30a042ac4000def040a1ccba04a188f3ad884b8d59
+FROM docker.io/php:8.1.1-cli
 
-RUN apt-get update && apt-get -y install libmariadb-dev
+RUN apt-get update \
+    && apt-get -y install \
+        libmariadb-dev \
+        zlib1g-dev \
+        libzip-dev \
+        git zip unzip
 
 RUN pecl install redis \
     && pecl install xdebug \
     && docker-php-ext-enable redis xdebug
 
-RUN docker-php-ext-install pdo_mysql mysqli
+RUN docker-php-ext-install pdo_mysql mysqli zip
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
